@@ -25,7 +25,7 @@ public abstract class NavigationBarEffect implements FeedbackEffect {
         if (!validateFeedbackEffects(mFeedbackEffects)) {
             mFeedbackEffects.clear();
         }
-        NavigationBarView navigationBarView = statusBar.getNavigationBarView();
+        NavigationBarView navigationBarView = (NavigationBarView) statusBar.getNavigationBarView();
         if (navigationBarView == null) {
             mFeedbackEffects.clear();
         }
