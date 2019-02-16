@@ -2,6 +2,7 @@ package com.google.android.systemui.elmyra.feedback;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.os.PowerManager;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.view.View;
@@ -20,6 +21,7 @@ public class SquishyNavigationButtons extends NavigationBarEffect {
     private final SquishyViewController mViewController;
 
     private ContentResolver resolver;
+    private PowerManager pm;
 
     public SquishyNavigationButtons(Context context) {
         super(context);
@@ -27,6 +29,7 @@ public class SquishyNavigationButtons extends NavigationBarEffect {
         mViewController = new SquishyViewController(context);
         mKeyguardViewMediator = (KeyguardViewMediator) SysUiServiceProvider.getComponent(
             context, KeyguardViewMediator.class);
+        pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
     }
 
     protected List<FeedbackEffect> findFeedbackEffects(Navigator navigationBarView) {
@@ -47,7 +50,11 @@ public class SquishyNavigationButtons extends NavigationBarEffect {
     protected boolean isActiveFeedbackEffect(FeedbackEffect feedbackEffect) {
         boolean squeezeSelection = Settings.Secure.getIntForUser(resolver,
                 Settings.Secure.SQUEEZE_SELECTION, 0, UserHandle.USER_CURRENT) == 0;
-        return !squeezeSelection && !mKeyguardViewMediator.isShowingAndNotOccluded();
+
+        /* Make sure we're not calling the navbar animation if battery saver
+           mode is on and/or if the screen is off.*/
+        return !pm.isPowerSaveMode() && !squeezeSelection && pm.isScreenOn()
+                && !mKeyguardViewMediator.isShowingAndNotOccluded();
     }
 
     @Override
