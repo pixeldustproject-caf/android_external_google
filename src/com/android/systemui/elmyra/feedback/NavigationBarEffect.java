@@ -1,6 +1,8 @@
 package com.google.android.systemui.elmyra.feedback;
 
 import android.content.Context;
+import android.os.UserHandle;
+import android.provider.Settings;
 import com.android.systemui.SysUiServiceProvider;
 import com.android.systemui.statusbar.phone.NavigationBarView;
 import com.android.systemui.statusbar.phone.StatusBar;
@@ -17,6 +19,8 @@ public abstract class NavigationBarEffect implements FeedbackEffect {
     }
 
     private void refreshFeedbackEffects() {
+        int navbarMode = Settings.Secure.getIntForUser(getContentResolver(), Settings.Secure.NAVIGATION_BAR_MODE,
+                    0, UserHandle.USER_CURRENT);
         StatusBar statusBar = (StatusBar) SysUiServiceProvider.getComponent(mContext, StatusBar.class);
         if (statusBar == null || statusBar.getNavigationBarView() == null) {
             mFeedbackEffects.clear();
@@ -25,12 +29,22 @@ public abstract class NavigationBarEffect implements FeedbackEffect {
         if (!validateFeedbackEffects(mFeedbackEffects)) {
             mFeedbackEffects.clear();
         }
-        NavigationBarView navigationBarView = (NavigationBarView) statusBar.getNavigationBarView();
-        if (navigationBarView == null) {
-            mFeedbackEffects.clear();
-        }
-        if (mFeedbackEffects.isEmpty() && navigationBarView != null) {
-            mFeedbackEffects.addAll(findFeedbackEffects(navigationBarView));
+        if (navbarMode > 0) { //SmartBar or FlingBar
+            BaseNavigationBar navigationBarView = (BaseNavigationBar) statusBar.getNavigationBarView();
+            if (navigationBarView == null) {
+                mFeedbackEffects.clear();
+            }
+            if (mFeedbackEffects.isEmpty() && navigationBarView != null) {
+                mFeedbackEffects.addAll(findFeedbackEffects(navigationBarView));
+            }
+        } else { //StockNavbar
+            NavigationBarView navigationBarView = (NavigationBarView) statusBar.getNavigationBarView();
+            if (navigationBarView == null) {
+                mFeedbackEffects.clear();
+            }
+            if (mFeedbackEffects.isEmpty() && navigationBarView != null) {
+                mFeedbackEffects.addAll(findFeedbackEffects(navigationBarView));
+            }
         }
     }
 
