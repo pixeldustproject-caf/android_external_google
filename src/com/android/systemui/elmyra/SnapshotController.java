@@ -8,11 +8,11 @@ import com.google.android.systemui.elmyra.sensors.GestureSensor;
 import com.google.android.systemui.elmyra.sensors.GestureSensor.DetectionProperties;
 import java.util.Random;
 
-public final class SnapshotController implements com.google.android.systemui.elmyra.sensors.GestureSensor.Listener {
+public final class SnapshotController implements GestureSensor.Listener {
     private final Handler mHandler = new Handler(Looper.getMainLooper()) {
         public void handleMessage(Message message) {
             if (message.what == 1) {
-                SnapshotController.this.requestSnapshot((SnapshotHeader) message.obj);
+                requestSnapshot((SnapshotHeader) message.obj);
             }
         }
     };
@@ -25,12 +25,12 @@ public final class SnapshotController implements com.google.android.systemui.elm
     }
 
     public SnapshotController(SnapshotConfiguration snapshotConfiguration) {
-        this.mSnapshotDelayAfterGesture = snapshotConfiguration.getSnapshotDelayAfterGesture();
+       mSnapshotDelayAfterGesture = snapshotConfiguration.getSnapshotDelayAfterGesture();
     }
 
     private void requestSnapshot(SnapshotHeader snapshotHeader) {
-        if (this.mSnapshotListener != null) {
-            this.mSnapshotListener.onSnapshotRequested(snapshotHeader);
+        if (mSnapshotListener != null) {
+           mSnapshotListener.onSnapshotRequested(snapshotHeader);
         }
     }
 
@@ -38,21 +38,22 @@ public final class SnapshotController implements com.google.android.systemui.elm
         SnapshotHeader snapshotHeader = new SnapshotHeader();
         snapshotHeader.gestureType = 1;
         snapshotHeader.identifier = detectionProperties != null ? detectionProperties.getActionId() : 0;
-        this.mLastGestureStage = 0;
-        this.mHandler.sendMessageDelayed(this.mHandler.obtainMessage(1, snapshotHeader), (long) this.mSnapshotDelayAfterGesture);
+
+        mLastGestureStage = 0;
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(1, snapshotHeader), (long) mSnapshotDelayAfterGesture);
     }
 
     public void onGestureProgress(GestureSensor gestureSensor, float f, int i) {
-        if (this.mLastGestureStage == 2 && i != 2) {
+        if (mLastGestureStage == 2 && i != 2) {
             SnapshotHeader snapshotHeader = new SnapshotHeader();
             snapshotHeader.identifier = new Random().nextLong();
             snapshotHeader.gestureType = 2;
             requestSnapshot(snapshotHeader);
         }
-        this.mLastGestureStage = i;
+       mLastGestureStage = i;
     }
 
     public void setListener(Listener listener) {
-        this.mSnapshotListener = listener;
+       mSnapshotListener = listener;
     }
 }

@@ -44,48 +44,21 @@ public abstract class NavigationBarEffect implements FeedbackEffect {
     @Override
 	public void onProgress(float f, int i) {
         refreshFeedbackEffects();
-        int i2 = 0;
-        while (true) {
-            int i3 = i2;
-            if (i3 < mFeedbackEffects.size()) {
-                FeedbackEffect feedbackEffect = mFeedbackEffects.get(i3);
-                if (isActiveFeedbackEffect(feedbackEffect)) {
-                    feedbackEffect.onProgress(f, i);
-                }
-                i2 = i3 + 1;
-            } else {
-                return;
-            }
-        }
+        mFeedbackEffects.forEach(
+                feedbackEffect -> feedbackEffect.onProgress(f, i));
     }
 
     @Override
 	public void onRelease() {
         refreshFeedbackEffects();
-        int i = 0;
-        while (true) {
-            int i2 = i;
-            if (i2 < mFeedbackEffects.size()) {
-                mFeedbackEffects.get(i2).onRelease();
-                i = i2 + 1;
-            } else {
-                return;
-            }
-        }
+        mFeedbackEffects.forEach(
+                feedbackEffect -> feedbackEffect.onRelease());
     }
 
     public void onResolve(DetectionProperties detectionProperties) {
         refreshFeedbackEffects();
-        int i = 0;
-        while (true) {
-            int i2 = i;
-            if (i2 < mFeedbackEffects.size()) {
-                mFeedbackEffects.get(i2).onResolve(detectionProperties);
-                i = i2 + 1;
-            } else {
-                return;
-            }
-        }
+        mFeedbackEffects.forEach(
+                feedbackEffect -> feedbackEffect.onResolve(detectionProperties));
     }
 
     protected abstract boolean validateFeedbackEffects(List<FeedbackEffect> list);

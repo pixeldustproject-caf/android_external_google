@@ -123,4 +123,3 @@ public class CustomActions extends Action {
         context.startActivity(intent);
     }
 }
-

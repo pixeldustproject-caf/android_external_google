@@ -59,19 +59,8 @@ public class GestureConfiguration {
     }
 
     public float getSensitivity() {
-        //TODO: improve logic for adjustments, for now they are bypassed as we don't wanna use them.
-
-        /*int i = 0;
-        float f = mSensitivity;
-        while (true) {
-            int i2 = i;
-            if (i2 >= mAdjustments.size()) {
-                return f;
-            }
-            f = SENSITIVITY_RANGE.clamp(Float.valueOf(((
-                    Adjustment) mAdjustments.get(i2)).adjustSensitivity(f))).floatValue();
-            i = i2 + 1;
-        }*/
+        // TODO: improve logic for adjustments, for now we don't apply any kind of further
+        //       adjustment to the user sensitivity.
         return mSensitivity;
     }
 

@@ -2,6 +2,7 @@ package com.google.android.systemui.elmyra;
 
 import android.os.Binder;
 import com.google.android.systemui.elmyra.proto.nano.ElmyraChassis.SensorEvent;
+import com.google.android.systemui.elmyra.proto.nano.SnapshotMessages;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -12,42 +13,42 @@ public class SnapshotLogger {
     private List<Snapshot> mSnapshots;
 
     public class Snapshot {
-        final com.google.android.systemui.elmyra.proto.nano.SnapshotMessages.Snapshot mSnapshot;
+        final SnapshotMessages.Snapshot mSnapshot;
         final long mTimestamp;
 
-        Snapshot(com.google.android.systemui.elmyra.proto.nano.SnapshotMessages.Snapshot snapshot, long j) {
-            this.mSnapshot = snapshot;
-            this.mTimestamp = j;
+        Snapshot(SnapshotMessages.Snapshot snapshot, long timeStamp) {
+            mSnapshot = snapshot;
+            mTimestamp = timeStamp;
         }
 
-        public com.google.android.systemui.elmyra.proto.nano.SnapshotMessages.Snapshot getSnapshot() {
-            return this.mSnapshot;
+        public SnapshotMessages.Snapshot getSnapshot() {
+            return mSnapshot;
         }
 
         long getTimestamp() {
-            return this.mTimestamp;
+            return mTimestamp;
         }
     }
 
-    public SnapshotLogger(int i) {
-        this.mSnapshotCapacity = i;
-        this.mSnapshots = new ArrayList(i);
+    public SnapshotLogger(int size) {
+        mSnapshotCapacity = size;
+        mSnapshots = new ArrayList(size);
     }
 
-    public void addSnapshot(com.google.android.systemui.elmyra.proto.nano.SnapshotMessages.Snapshot snapshot, long j) {
-        if (this.mSnapshots.size() == this.mSnapshotCapacity) {
-            this.mSnapshots.remove(0);
+    public void addSnapshot(SnapshotMessages.Snapshot snapshot, long timeStamp) {
+        if (mSnapshots.size() == mSnapshotCapacity) {
+            mSnapshots.remove(0);
         }
-        this.mSnapshots.add(new Snapshot(snapshot, j));
+        mSnapshots.add(new Snapshot(snapshot, timeStamp));
     }
 
     public void didReceiveQuery() {
-        if (this.mSnapshots.size() > 0) {
-            ((Snapshot) this.mSnapshots.get(this.mSnapshots.size() - 1)).getSnapshot().header.feedback = 1;
+        if (mSnapshots.size() > 0) {
+            ((Snapshot) mSnapshots.get(mSnapshots.size() - 1)).getSnapshot().header.feedback = 1;
         }
     }
 
     public List<Snapshot> getSnapshots() {
-        return this.mSnapshots;
+        return mSnapshots;
     }
 }

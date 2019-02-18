@@ -33,10 +33,10 @@ public abstract class Action {
 
     protected void notifyListener() {
         if (mListener != null) {
-            mHandler.post(new LambdaActionNotify(this));
+            mHandler.post(new ActionNotifyHelper(this));
         }
         if (!isAvailable()) {
-            mHandler.post(new LambdaActionFeedback(this));
+            mHandler.post(new ActionFeedbackHelper(this));
         }
     }
 
@@ -56,54 +56,30 @@ public abstract class Action {
 
     protected void triggerFeedbackEffects(DetectionProperties detectionProperties) {
         if (isAvailable()) {
-            int i = 0;
-            while (true) {
-                int i2 = i;
-                if (i2 < mFeedbackEffects.size()) {
-                    mFeedbackEffects.get(i2).onResolve(detectionProperties);
-                    i = i2 + 1;
-                } else {
-                    return;
-                }
-            }
+            mFeedbackEffects.forEach(
+                feedbackEffect -> feedbackEffect.onResolve(detectionProperties));
         }
     }
 
     protected void updateFeedbackEffects(float f, int i) {
-        int i2 = 0;
-        int i3;
         if (f == 0.0f || i == 0) {
-            while (true) {
-                i3 = i2;
-                if (i3 < mFeedbackEffects.size()) {
-                    mFeedbackEffects.get(i3).onRelease();
-                    i2 = i3 + 1;
-                } else {
-                    return;
-                }
-            }
+            mFeedbackEffects.forEach(
+                    feedbackEffect -> feedbackEffect.onRelease());
         } else if (isAvailable()) {
-            while (true) {
-                i3 = i2;
-                if (i3 < mFeedbackEffects.size()) {
-                    mFeedbackEffects.get(i3).onProgress(f, i);
-                    i2 = i3 + 1;
-                } else {
-                    return;
-                }
-            }
+            mFeedbackEffects.forEach(
+                    feedbackEffect -> feedbackEffect.onProgress(f, i));
         }
     }
 
-    // Small lambdas for Action class only, let's make them private.
-    private class LambdaActionNotify implements Runnable {
+    // Small helper classes for Action class only, let's make them private.
+    private class ActionNotifyHelper implements Runnable {
         private Action action;
 
-        public LambdaActionNotify(Action act) {
+        public ActionNotifyHelper(Action act) {
             action = act;
         }
 
-        public void lambdaNotifyListener(Action act) {
+        public void actionNotifyListener(Action act) {
             if (action.mListener != null) {
                 action.mListener.onActionAvailabilityChanged(act);
             }
@@ -111,15 +87,14 @@ public abstract class Action {
 
         @Override
         public final void run() {
-            lambdaNotifyListener(action);
+            actionNotifyListener(action);
         }
     }
 
-
-    private class LambdaActionFeedback implements Runnable {
+    private class ActionFeedbackHelper implements Runnable {
         private Action action;
 
-        public LambdaActionFeedback(Action act) {
+        public ActionFeedbackHelper(Action act) {
            action = act;
         }
 

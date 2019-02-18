@@ -9,26 +9,26 @@ public class SnapshotConfiguration {
     private final int mSnapshotDelayAfterGesture;
 
     public SnapshotConfiguration() {
-        this.mCompleteGestures = 0;
-        this.mIncompleteGestures = 0;
-        this.mSnapshotDelayAfterGesture = 0;
+        mCompleteGestures = 0;
+        mIncompleteGestures = 0;
+        mSnapshotDelayAfterGesture = 0;
     }
 
     public SnapshotConfiguration(Context context) {
-        this.mCompleteGestures = context.getResources().getInteger(R.integer.elmyra_snapshot_logger_gesture_size);
-        this.mIncompleteGestures = context.getResources().getInteger(R.integer.elmyra_snapshot_logger_incomplete_gesture_size);
-        this.mSnapshotDelayAfterGesture = context.getResources().getInteger(R.integer.elmyra_snapshot_gesture_delay_ms);
+        mCompleteGestures = context.getResources().getInteger(R.integer.elmyra_snapshot_logger_gesture_size);
+        mIncompleteGestures = context.getResources().getInteger(R.integer.elmyra_snapshot_logger_incomplete_gesture_size);
+        mSnapshotDelayAfterGesture = context.getResources().getInteger(R.integer.elmyra_snapshot_gesture_delay_ms);
     }
 
     public int getCompleteGestures() {
-        return this.mCompleteGestures;
+        return mCompleteGestures;
     }
 
     public int getIncompleteGestures() {
-        return this.mIncompleteGestures;
+        return mIncompleteGestures;
     }
 
     public int getSnapshotDelayAfterGesture() {
-        return this.mSnapshotDelayAfterGesture;
+        return mSnapshotDelayAfterGesture;
     }
 }
