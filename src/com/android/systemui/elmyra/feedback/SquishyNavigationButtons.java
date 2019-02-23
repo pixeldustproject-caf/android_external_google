@@ -46,13 +46,15 @@ public class SquishyNavigationButtons extends NavigationBarEffect {
 
     @Override
     protected boolean isActiveFeedbackEffect(FeedbackEffect feedbackEffect) {
-        boolean squeezeSelection = Settings.Secure.getIntForUser(mResolver,
-                Settings.Secure.SQUEEZE_SELECTION, 0, UserHandle.USER_CURRENT) == 0;
+        boolean shortSqueezeSelection = Settings.Secure.getIntForUser(mResolver,
+                Settings.Secure.SHORT_SQUEEZE_SELECTION, 0, UserHandle.USER_CURRENT) == 0;
+        boolean longSqueezeSelection = Settings.Secure.getIntForUser(mResolver,
+                Settings.Secure.LONG_SQUEEZE_SELECTION, 0, UserHandle.USER_CURRENT) == 0;
 
         /* Make sure we're not calling the navbar animation if battery saver
            mode is on and/or if the screen is off.*/
-        return !mPm.isPowerSaveMode() && !squeezeSelection && mPm.isScreenOn()
-                && !mKeyguardViewMediator.isShowingAndNotOccluded();
+        return !mPm.isPowerSaveMode() && (!shortSqueezeSelection || !longSqueezeSelection)
+                && mPm.isScreenOn() && !mKeyguardViewMediator.isShowingAndNotOccluded();
     }
 
     @Override
